@@ -44,7 +44,12 @@ This project is a comprehensive reactor simulation tool developed in Fortran, de
 - Time-dependent analysis for transient behavior
 - Monte Carlo methods for more accurate neutron transport simulations
 - Integration with thermal-hydraulic models for coupled neutronic-thermal analysis
+
+## Software Architecture
+# Roadmap
 ![Flow Diagram](workflow.png)
+# Reactor Calculations
+![Flow Diagram](reactor.png)
 ---
 
 This project demonstrates a practical application of nuclear engineering principles and computational methods, showcasing skills relevant to the field of reactor physics and design.
