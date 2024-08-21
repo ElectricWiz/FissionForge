@@ -5,8 +5,11 @@ program reactor_simulation
     integer :: geometry_type, calculation_type
     logical :: continue_simulation
 
-    integer :: sizeMesh, noDomains
+    integer :: sizeMesh
     
+    print *,"How many points for the total mesh?"
+    read (*,*) sizeMesh
+
     call initialize()
 
     do
@@ -20,13 +23,13 @@ program reactor_simulation
             ! Perform calculation based on geometry
             select case (geometry_type)
             case (1) 
-                 call calculate_slab_mesh(sizeMesh, noDomains)
+                 call calculate_slab_mesh(sizeMesh)
             case (2)  
-                 call calculate_cylindrical_mesh(sizeMesh, noDomains)
+                 call calculate_cylindrical_mesh(sizeMesh)
             case (3)
-                call calculate_spherical_mesh(sizeMesh, noDomains)
+                call calculate_spherical_mesh(sizeMesh)
             case (4) 
-                call calculate_reflected_mesh(sizeMesh, noDomains)
+                call calculate_reflected_mesh(sizeMesh)
             case default
                 print *, "Invalid geometry type"
                 cycle
