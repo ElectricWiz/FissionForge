@@ -5,31 +5,55 @@ program reactor_simulation
     integer :: geometry_type, calculation_type
     logical :: continue_simulation
 
-    integer :: sizeMesh
+    integer :: nx
+    integer :: ny
+    integer :: nz
     
-    print *,"How many points for the total mesh?"
-    read (*,*) sizeMesh
-
+    real :: radius
+    real :: fill_value
     call initialize()
 
     do
         call display_menu()
-        read(*, *) calculation_type
+        read(*, *) dimensions
 
-        select case (calculation_type)
-        case (1) ! New calculation
-            call get_reactor_geometry(geometry_type)
-
-            ! Perform calculation based on geometry
+        select case (dimensions)
+        case (1)  
+            print *,"How many points for the X axis?"
+            read (*,*) nx
+    
+            ny = 1
+            nz = 1 
+            call create_meshgrid(nx, ny, nz, meshgrid)
+        case (2)
+            print *,"How many points for the X axis?"
+            read (*,*) nx
+            print *,"How many points for the Y axis?"
+            read (*,*) ny
+    
+            nz = 1 
+            call create_meshgrid(nx, ny, nz, meshgrid)
             select case (geometry_type)
-            case (1) 
-                 call calculate_slab_mesh(sizeMesh)
-            case (2)  
-                 call calculate_cylindrical_mesh(sizeMesh)
-            case (3)
+            case (1)
+                print *,"Radius Size"
+                read (*,*) radius
+                print *,"value at boundaries (DIRICHLET CONDITIONS)"
+                read (*,*) fill_value
+
+                call partition_circle(meshgrid, radius, fill_value, interior_mask)
+            case (2)
+                print *,"Width length"
+                read (*,*) width
+                print *,"Height length"
+                read (*,*) height
+                print *,"value at boundaries (DIRICHLET CONDITIONS)"
+                read (*,*) fill_value
+
+                
+                call partition_rectangle(meshgrid, width, height, fill_value_value, boundary_mask, status)
+        case (3)
                 call calculate_spherical_mesh(sizeMesh)
-            case (4) 
-                call calculate_reflected_mesh(sizeMesh)
+
             case default
                 print *, "Invalid geometry type"
                 cycle
