@@ -1,4 +1,4 @@
-module geometry_partitioner
+module 2d_boundary
     implicit none
     private
     public :: partition_circle, partition_square, partition_rectangle
@@ -96,4 +96,4 @@ module geometry_partitioner
         end do
     end subroutine partition_rectangle
     
-end module geometry_partitioner
+end module 2d_boundary
