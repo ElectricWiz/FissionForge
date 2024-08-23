@@ -13,24 +13,6 @@ module helmholtz_solver
 
 contains
 
-  subroutine initialize(mesh_grid)
-    real, intent(in) :: mesh_grid(:,:,:)
-    integer :: mesh_shape(3)
-    
-    mesh_shape = shape(mesh_grid)
-    dim = count(mesh_shape > 1)
-    
-    nx = mesh_shape(1)
-    ny = mesh_shape(2)
-    nz = mesh_shape(3)
-    
-    allocate(u(nx,ny,nz), f(nx,ny,nz))
-    allocate(mesh, source=mesh_grid)
-    
-    ! Initialize arrays and set boundary conditions
-    ! Use mesh to set up initial conditions
-  end subroutine initialize
-
   subroutine gauss_seidel_iteration()
     integer :: i, j, l
     real :: h_x, h_y, h_z
@@ -82,21 +64,3 @@ contains
   end subroutine solve
 
 end module helmholtz_solver
-
-program main
-  use helmholtz_solver
-  implicit none
-  
-  real, allocatable :: mesh_grid(:,:,:)
-  
-  ! Generate or load mesh_grid here
-  ! For example:
-  ! 1D: allocate(mesh_grid(100,1,1))
-  ! 2D: allocate(mesh_grid(100,100,1))
-  ! 3D: allocate(mesh_grid(100,100,100))
-  
-  call initialize(mesh_grid)
-  call solve()
-  ! Output results
-  
-end program main
