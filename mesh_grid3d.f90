@@ -1,60 +1,86 @@
-module meshgrid
+module meshgrid_3d
     implicit none
     private
     public :: create_meshgrid
 
 contains
 
-    subroutine create_meshgrid(x, y, z, xx, yy, zz)
-        real, intent(in) :: x(:)
-        real, intent(in), optional :: y(:), z(:)
-        real, allocatable, intent(out) :: xx(:,:,:), yy(:,:,:), zz(:,:,:)
-        integer :: nx, ny, nz, i, j, k
-
-        nx = size(x)
-        ny = 1
-        nz = 1
-
-        if (present(y)) ny = size(y)
-        if (present(z)) nz = size(z)
-
-        allocate(xx(nx,ny,nz))
-        if (ny > 1) allocate(yy(nx,ny,nz))
-        if (nz > 1) allocate(zz(nx,ny,nz))
-
-        ! 1D case
-        if (ny == 1 .and. nz == 1) then
-            xx(:,1,1) = x
-            return
-        end if
-
-        ! 2D case
-        if (nz == 1) then
-            do j = 1, ny
-                xx(:,j,1) = x
-            end do
-            do i = 1, nx
-                yy(i,:,1) = y
-            end do
-            return
-        end if
-
-        ! 3D case
+    subroutine create_meshgrid(nx, ny, nz, meshgrid)
+        integer, intent(in) :: nx, ny, nz
+        real, allocatable, intent(out) :: meshgrid(:,:,:,:)  ! 4D array to hold x, y, z coordinates
+        integer :: i, j, k
+        real :: dx, dy, dz
+        
+        allocate(meshgrid(nx, ny, nz, 3))
+        meshgrid = 0.0  ! Initialize all elements to zero
+        
+        dx = 1.0 / real(nx - 1)
+        dy = 1.0 / real(ny - 1)
+        dz = 1.0 / real(nz - 1)
+        
+        ! Generate x coordinates
         do k = 1, nz
             do j = 1, ny
-                xx(:,j,k) = x
+                do i = 1, nx
+                    meshgrid(i,j,k,1) = real(i-1) * dx
+                end do
             end do
         end do
+        
+        ! Generate y coordinates
         do k = 1, nz
-            do i = 1, nx
-                yy(i,:,k) = y
+            do j = 1, ny
+                do i = 1, nx
+                    meshgrid(i,j,k,2) = real(j-1) * dy
+                end do
             end do
         end do
-        do j = 1, ny
-            do i = 1, nx
-                zz(i,j,:) = z
+        
+        ! Generate z coordinates
+        do k = 1, nz
+            do j = 1, ny
+                do i = 1, nx
+                    meshgrid(i,j,k,3) = real(k-1) * dz
+                end do
             end do
         end do
     end subroutine create_meshgrid
 
-end module meshgrid
+end module meshgrid_3d
+
+program test_meshgrid
+    use meshgrid_3d
+    implicit none
+    
+    integer :: nx, ny, nz
+    real, allocatable :: result(:,:,:,:)
+    integer :: i, j, k
+
+    ! Get input from user
+    print *, "Enter nx, ny, nz:"
+    read *, nx, ny, nz
+
+    ! Create 3D mesh
+    call create_meshgrid(nx, ny, nz, result)
+
+    ! Print a few values to verify
+    print *, "Sample values:"
+    print *, "At (1,1,1): ", result(1,1,1,:)
+    print *, "At (nx,ny,nz): ", result(nx,ny,nz,:)
+
+    ! Optional: Print full grid (be cautious with large grids)
+    if (nx*ny*nz <= 1000) then  ! Only print if total points <= 1000
+        do k = 1, nz
+            do j = 1, ny
+                do i = 1, nx
+                    print *, "At (", i, ",", j, ",", k, "): ", result(i,j,k,:)
+                end do
+            end do
+        end do
+    else
+        print *, "Grid too large to print all values."
+    end if
+
+    deallocate(result)
+
+end program test_meshgrid
