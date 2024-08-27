@@ -1,3 +1,5 @@
+![Fortran](https://img.shields.io/badge/Fortran-2018-purple.svg)
+---
 # Reactor Simulation Project
 
 ## Project Overview
